@@ -10,14 +10,14 @@
 
     <groupId>com.bqreaders.silkroad</groupId>
     <artifactId>cli-console</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <name>cli-console</name>
 
     <scm>
         <connection>scm:git:git@bitbucket.org:mundoreader/silkroad-cli-console.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:mundoreader/silkroad-cli-console.git</developerConnection>
-      <tag>cli-console-1.1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <dependencies>
