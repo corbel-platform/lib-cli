@@ -3,8 +3,10 @@
  */
 package com.bqreaders.cli.console
 
+import com.google.common.collect.Maps;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer
 import com.thoughtworks.paranamer.Paranamer
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,20 +14,21 @@ import org.slf4j.LoggerFactory
  * @author Alexander De Leon
  *
  */
-public class Console<E> {
+public class Console {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Console.class)
 
-	E shell
+	Map<String, Object> shells
 	String welcomeMessage
-	String namespace
 
-	public Console(String welcomeMessage, String namespace, E shell) {
-		this.shell = shell
-		this.welcomeMessage = welcomeMessage
-		this.namespace = namespace
+	public Console(String welcomeMessage, String namespace, Object shell) {
+		this(welcomeMessage, Collections.singletonMap(namespace, shell))
 	}
 
+	public Console(String welcomeMessage, Map<String, Object> shells){
+		this.shells = shells
+		this.welcomeMessage = welcomeMessage
+	}
 
 	public void launch() {
 		getGroovyShell().run()
@@ -43,34 +46,38 @@ public class Console<E> {
 
 	private GroovyShell getGroovyShell() {
 		Binding binding = new Binding()
-		addShell(binding)
+		addShells(binding)
 		addHelpClosure(binding)
 		init(binding)
-		LOG.info("Starting GroovyShellThread for ${shell.class.name}")
+		LOG.info("Starting GroovyShellThread for shells: ${shells.keySet()}")
 		new GroovyShell(System.in, System.out, binding, welcomeMessage)
 	}
 
-	private void addShell(Binding binding) {
-		binding.setVariable(namespace, shell)
+	private void addShells(Binding binding) {
+		shells.each { namespace, shell ->
+			binding.setVariable(namespace, shell)
+		}
 	}
 
 	private void addHelpClosure(Binding binding) {
-		final StringBuffer buffer = new StringBuffer('\n')
-		shell.class.methods.each {
-			Description desc = it.getAnnotation(Description.class)
-			if (desc) {
-				buffer.append(namespace).append('.').append(it.name).append('(')
-				getParams(it).each { paramType ->
-					buffer.append(paramType).append(',')
+		shells.each { namespace, shell ->
+			final StringBuffer buffer = new StringBuffer('\n')
+			shell.class.methods.each {
+				Description desc = it.getAnnotation(Description.class)
+				if (desc) {
+					buffer.append(namespace).append('.').append(it.name).append('(')
+					getParams(it).each { paramType ->
+						buffer.append(paramType).append(',')
+					}
+					if (buffer.getAt(buffer.length() - 1) == ',') {
+						buffer.deleteCharAt(buffer.length() - 1)
+					}
+					buffer.append('): ')
+					buffer.append(desc.value()).append('\n')
 				}
-				if (buffer.getAt(buffer.length() - 1) == ',') {
-					buffer.deleteCharAt(buffer.length() - 1)
-				}
-				buffer.append('): ')
-				buffer.append(desc.value()).append('\n')
 			}
+			shell.metaClass.help { buffer.toString() }
 		}
-		shell.metaClass.help { buffer.toString() }
 	}
 
 	String[] getParams(method) {
