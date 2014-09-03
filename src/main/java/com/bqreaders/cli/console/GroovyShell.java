@@ -3,6 +3,9 @@
  */
 package com.bqreaders.cli.console;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,9 +15,6 @@ import java.util.List;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.tools.shell.Groovysh;
 import org.codehaus.groovy.tools.shell.IO;
-
-import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
 
 /**
  * @author Alexander De Leon
@@ -76,7 +76,7 @@ public class GroovyShell {
 				if (!file.exists() || !file.canRead() || !file.isFile()) {
 					throw new GroovyShellException("Unable to open script file: " + file);
 				}
-				shell.execute("load " + file.getAbsolutePath());
+				shell.execute(":load " + file.getAbsolutePath());
 			}
 		} catch (Exception e) {
 			throw new GroovyShellException(e);
