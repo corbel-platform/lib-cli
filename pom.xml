@@ -34,6 +34,13 @@
         <spring.version>4.1.2.RELEASE</spring.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:bq/lib-cli.git</connection>
+        <developerConnection>scm:git:git@github.com:bq/lib-cli.git</developerConnection>
+        <url>https://github.com/bq/lib-cli</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
