@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 StarTIC
  */
-package com.bqreaders.cli.console;
+package com.bq.oss.lib.cli.console;
 
 /**
  * @author Alexander De Leon

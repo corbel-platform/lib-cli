@@ -1,9 +1,8 @@
 /*
  * Copyright (C) 2013 StarTIC
  */
-package com.bqreaders.cli.console
+package com.bq.oss.lib.cli.console
 
-import com.google.common.collect.Maps;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer
 import com.thoughtworks.paranamer.Paranamer
 

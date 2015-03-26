@@ -1,4 +1,4 @@
-package com.bqreaders.cli.console;
+package com.bq.oss.lib.cli.console;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
