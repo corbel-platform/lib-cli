@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2013 StarTIC
- */
-package com.bq.oss.lib.cli.console
+package io.corbel.lib.cli.console
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer
 import com.thoughtworks.paranamer.Paranamer

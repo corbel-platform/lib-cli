@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2013 StarTIC
- */
-package com.bq.oss.lib.cli.console;
+package io.corbel.lib.cli.console;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
