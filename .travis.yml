@@ -1,5 +1,16 @@
 language: java
 jdk:
-- oraclejdk8
-script:
-- mvn clean test
+  - oraclejdk8
+install:
+  - mvn test jacoco:report coveralls:report -B -V
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+deploy:
+  -
+    provider: script
+    script: .travis/deploy.sh
+    on:
+      all_branches: true
+      repo: corbel-platform/lib-cli
+      jdk: oraclejdk8

@@ -20,8 +20,8 @@
     </licenses>
 
     <organization>
-        <name>bq</name>
-        <url>http://www.bq.com/</url>
+        <name>Devialab</name>
+        <url>http://www.devialab.com/</url>
     </organization>
 
     <properties>
@@ -38,10 +38,13 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>sonatype</id>
-            <name>Sonatype Nexus snapshot repository</name>
+            <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <dependencies>
@@ -93,6 +96,24 @@
             <version>${spring.version}</version>
         	<scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert-core</artifactId>
+            <version>2.0M10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -100,60 +121,29 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.3</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!-- Groovy support -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.2.201409121644</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
+                        <id>prepare-agent</id>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/main/groovy</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/test/groovy</source>
-                            </sources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
-                <configuration>
-                    <providerSelection>2.0</providerSelection>
-                    <sourceEncoding>UTF-8</sourceEncoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateStubs</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>3.0.1</version>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -161,42 +151,53 @@
                 <version>1.6.3</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>sonatype</serverId>
+                    <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <ciManagement>
         <system>Travis CI</system>
@@ -210,16 +211,8 @@
 
     <developers>
         <developer>
-            <name>David Martínez</name>
-            <email>david.martinez@bq.com</email>
-            <timezone>Europe/Madrid</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
             <name>Alexander de Leon</name>
-            <email>alexander.deleon@bq.com</email>
+            <email>alexander.deleon@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -227,7 +220,7 @@
         </developer>
         <developer>
             <name>Alberto J. Rubio</name>
-            <email>alberto.rubio@bq.com</email>
+            <email>alberto.rubio@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -235,7 +228,7 @@
         </developer>
         <developer>
             <name>Anthanh Pham</name>
-            <email>anthanh.pham@bq.com</email>
+            <email>anthanh.pham@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -243,7 +236,7 @@
         </developer>
         <developer>
             <name>Francisco Sánchez</name>
-            <email>francisco.sanchez@bq.com</email>
+            <email>francisco.sanchez@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -251,7 +244,7 @@
         </developer>
         <developer>
             <name>Ismael Madirolas</name>
-            <email>ismael.madirolas@bq.com</email>
+            <email>ismael.madirolas@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -259,7 +252,7 @@
         </developer>
         <developer>
             <name>Cristian del Cerro</name>
-            <email>cristian.delcerro@bq.com</email>
+            <email>cristian.delcerro@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
@@ -267,23 +260,7 @@
         </developer>
         <developer>
             <name>Rubén Carrasco</name>
-            <email>rcarrasco@bq.com</email>
-            <timezone>Europe/Madrid</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Laura Sada</name>
-            <email>laura.sada@bq.com</email>
-            <timezone>Europe/Madrid</timezone>
-            <roles>
-                <role>committer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Luis Miguel García</name>
-            <email>luismiguel.garcia@bq.com</email>
+            <email>ruben.carrasco@devialab.com</email>
             <timezone>Europe/Madrid</timezone>
             <roles>
                 <role>committer</role>
